@@ -4,18 +4,7 @@
   var svgDirectives = {};
 
   angular.forEach([
-      'clipPath',
-      'colorProfile',
-      'src',
-      'cursor',
-      'fill',
-      'filter',
-      'marker',
-      'markerStart',
-      'markerMid',
-      'markerEnd',
-      'mask',
-      'stroke'
+      'xlinkHref'
     ],
     function(attr) {
       svgDirectives[attr] = [
@@ -80,12 +69,12 @@
         function($location,   $sniffer,   svgAttrExpressions,   urlResolve) {
           return function computeSVGAttrValue(url) {
             var match, fullUrl;
-            if (match = svgAttrExpressions.FUNC_URI.exec(url)) {
+            if (match = svgAttrExpressions.HASH_PART.exec(url)) {
               //hash in html5Mode, forces to be relative to current url instead of base
-              if (match[1].indexOf('#') === 0) {
+              if (url.indexOf('#') === 0) {
                 fullUrl = $location.absUrl().
                   replace(svgAttrExpressions.HASH_PART, '') +
-                  match[1];
+                  url;
               }
               //Presumably links to external SVG document
               else {
@@ -95,7 +84,7 @@
             if(typeof fullUrl === 'string') {
                 fullUrl = fullUrl.replace(/\(/g, '\\(').replace(/\)/g, '\\)');
             }
-            return fullUrl ? 'url(' + fullUrl + ')' : null;
+            return fullUrl ? fullUrl : null;
           };
         }
       ]
